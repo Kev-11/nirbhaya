@@ -1,0 +1,366 @@
+<!-- <!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location</title>
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            // Initialize the map centered on a default location
+            const defaultLocation = { lat: -34.397, lng: 150.644 };
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: defaultLocation,
+            });
+
+            // Add a marker for the default location
+            new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+            });
+
+            // Fetch and update location
+            navigator.geolocation.watchPosition(function(position) {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                map.setCenter(userLocation);
+
+                new google.maps.Marker({
+                    position: userLocation,
+                    map: map,
+                });
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</body>
+</html> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location</title>
+    <style>
+        body{
+            background-color: rgb(234, 84, 109);
+        }
+        #map {
+            height: 100vh; /* Full viewport height */
+            width: 100%; /* Full width */
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 5;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .button{
+            align-items: center;
+        }
+        .button:hover{
+            color:blue ;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="locate-me">Locate Me</button>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        let map;
+        let userMarker;
+
+        function initMap() {
+            // Initialize the map centered at a default location
+            const defaultLocation = { lat: -34.397, lng: 150.644 };
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: defaultLocation,
+            });
+
+            userMarker = new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+                title: 'Your Location',
+            });
+        }
+
+        function updateLocation(position) {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            // Update the map's center and the user's marker position
+            map.setCenter(userLocation);
+            userMarker.setPosition(userLocation);
+        }
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            console.log(browserHasGeolocation
+                ? 'Error: The Geolocation service failed.'
+                : 'Error: Your browser doesn\'t support geolocation.');
+        }
+
+        document.getElementById('locate-me').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(updateLocation, function() {
+                    handleLocationError(true, null, null);
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                });
+            } else {
+                handleLocationError(false, null, null);
+            }
+        });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</body>
+</html> -->
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location</title>
+    <style>
+        body{
+            background-color: rgb(234, 84, 109);
+        }
+        #map {
+            height: 100vh; /* Full viewport height */
+            width: 100%; /* Full width */
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 5;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .button{
+            align-items: center;
+        }
+        .button:hover{
+            color:blue ;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="locate-me">Locate Me</button>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        let map;
+        let userMarker;
+
+        function initMap() {
+            // Initialize the map centered at a default location
+            const defaultLocation = { lat: -34.397, lng: 150.644 };
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: defaultLocation,
+            });
+
+            userMarker = new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+                title: 'Your Location',
+            });
+        }
+
+        function updateLocation(position) {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            // Update the map's center and the user's marker position
+            map.setCenter(userLocation);
+            userMarker.setPosition(userLocation);
+
+            // Send location to server
+            fetch('/location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userLocation)
+            }).catch(error => {
+                console.error('Error sending location:', error);
+            });
+        }
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            console.log(browserHasGeolocation
+                ? 'Error: The Geolocation service failed.'
+                : 'Error: Your browser doesn\'t support geolocation.');
+        }
+
+        document.getElementById('locate-me').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(updateLocation, function() {
+                    handleLocationError(true, null, null);
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                });
+            } else {
+                handleLocationError(false, null, null);
+            }
+        });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location</title>
+    <style>
+        body {
+            background-color: rgb(234, 84, 109); /* Soft pink background */
+            margin: 0; /* Remove default margin */
+            font-family: Arial, sans-serif; /* Clean font */
+        }
+        #map {
+            height: 100vh; /* Full viewport height */
+            width: 100%; /* Full width */
+            position: relative; /* Positioning context for controls */
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 5; /* Ensure controls are above the map */
+            background-color: white; /* White background for the controls */
+            padding: 10px; /* Space around content */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        }
+        .button {
+            display: inline-block; /* Inline button */
+            padding: 10px 20px; /* Space inside button */
+            font-size: 16px; /* Font size for button text */
+            color: white; /* Text color */
+            background-color: rgb(234, 84, 109); /* Button background color */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            text-align: center; /* Center text */
+        }
+        .button:hover {
+            background-color: rgb(200, 70, 90); /* Slightly darker background on hover */
+            color: #fff; /* Ensure text is readable */
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="locate-me" class="button">Locate Me</button>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        let map;
+        let userMarker;
+
+        function initMap() {
+            // Initialize the map centered at a default location
+            const defaultLocation = { lat: -34.397, lng: 150.644 };
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: defaultLocation,
+            });
+
+            userMarker = new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+                title: 'Your Location',
+            });
+        }
+
+        function updateLocation(position) {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            // Update the map's center and the user's marker position
+            map.setCenter(userLocation);
+            userMarker.setPosition(userLocation);
+
+            // Send location to server
+            fetch('/location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userLocation)
+            }).catch(error => {
+                console.error('Error sending location:', error);
+            });
+        }
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            console.log(browserHasGeolocation
+                ? 'Error: The Geolocation service failed.'
+                : 'Error: Your browser doesn\'t support geolocation.');
+        }
+
+        document.getElementById('locate-me').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(updateLocation, function() {
+                    handleLocationError(true, null, null);
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                });
+            } else {
+                handleLocationError(false, null, null);
+            }
+        });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</body>
+</html>
+

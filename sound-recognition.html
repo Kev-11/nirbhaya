@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound Recognition</title>
+    <style>
+        body {
+            background-color: #f4f4f4; /* Light gray background */
+            margin: 0; /* Remove default margin */
+            font-family: Arial, sans-serif; /* Clean font */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
+            text-align: center; /* Center text */
+        }
+        h1 {
+            color: #333; /* Dark gray color for the heading */
+            margin-bottom: 20px; /* Space below the heading */
+        }
+        button {
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            border: none; /* Remove default border */
+            padding: 10px 20px; /* Space inside button */
+            font-size: 16px; /* Font size */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth color transition */
+        }
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        p {
+            font-size: 18px; /* Slightly larger font size for result */
+            color: #555; /* Medium gray color for text */
+            margin-top: 20px; /* Space above the result text */
+        }
+    </style>
+</head>
+<body>
+    <h1>Sound Recognition</h1>
+    <button id="start-recognition">Start Recognition</button>
+    <p id="result"></p>
+
+    <script>
+        const startRecognition = document.getElementById('start-recognition');
+        const result = document.getElementById('result');
+
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+        recognition.onresult = function(event) {
+            result.textContent = event.results[0][0].transcript;
+        };
+
+        startRecognition.addEventListener('click', function() {
+            recognition.start();
+        });
+    </script>
+</body>
+</html>
